@@ -1,10 +1,8 @@
 # Entity Repo
 
-The project allows you to create entity repositories to simplify working with external data.
+The library allows you to abstract the data source at the expense of repositories and use context as the single point of access to a set of entities.
 
 ## Description
-
-The library allows you to abstract the data source at the expense of repositories and use context as the single point of access to a set of entities.
 
 The set of entities supports CRUD operations - create, read, update, delete. In addition, all classes are extensible and allow to add necessary additional functionality.
 
@@ -223,6 +221,20 @@ export class EntityQueryBuilder<T, TGetParams extends {} = never, TRouteParams e
             config.routeParams = this.routeParamsRecord
         }
         return config
+    }
+}
+```
+
+Next is `EntitySet` itself, which extends `DefaultEntitySet`. It adds the `entitySet.query` method, which gives access to the created builder.
+
+```ts
+export class EntitySet<T extends RepoEntityBase, TGetParams extends {} = never, TRouteParams extends {} = never> extends DefaultEntitySet<T, RouteParamsRequestConfig> {
+    constructor(entityConstructor: RepoEntityStatic<T>, repository: IRepository<T>) {
+        super(entityConstructor, repository)
+    }
+
+    public query(): EntityQueryBuilder<T, TGetParams, TRouteParams> {
+        return new EntityQueryBuilder<T, TGetParams, TRouteParams>(this)
     }
 }
 ```
