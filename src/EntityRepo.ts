@@ -2,18 +2,18 @@ import { IRepositoryBuilder } from './repositories'
 import { EntityContextBase } from './entityContext'
 import { Constructor } from './types/Constructor'
 
-export class ApiEntityRepo {
+export class EntityRepo {
     private readonly entityContexts: Map<Constructor<EntityContextBase>, IRepositoryBuilder<any>>
 
     constructor() {
         this.entityContexts = new Map<Constructor<EntityContextBase>, IRepositoryBuilder<any>>()
     }
 
-    public static create(): ApiEntityRepo {
-        return new ApiEntityRepo()
+    public static create(): EntityRepo {
+        return new EntityRepo()
     }
 
-    public use(context: Constructor<EntityContextBase>, repositoryBuilder: IRepositoryBuilder<any>): ApiEntityRepo {
+    public use(context: Constructor<EntityContextBase>, repositoryBuilder: IRepositoryBuilder<any>): EntityRepo {
         this.entityContexts.set(context, repositoryBuilder)
         return this
     }
