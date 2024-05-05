@@ -1,8 +1,9 @@
 {
   "name": "@iappx/entity-repo",
-  "version": "2.2.25",
+  "version": "2.2.26",
   "description": "Creating entity repositories",
   "private": false,
+  "homepage": "https://github.com/iappx/entity-repo#readme",
   "keywords": [
     "xhr",
     "http",
