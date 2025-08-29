@@ -10,6 +10,12 @@ describe('Entity.getDataValues', () => {
         expect(dataValuesResult.id).toBe(id)
     })
 
+    it('build', () => {
+        const id = 1
+        const entity = TestEntity.build({ id })
+        expect(entity.id).toBe(id)
+    })
+
     it('nested entity', () => {
         const id = 1
         const entity = new TestEntity()
@@ -23,7 +29,7 @@ describe('Entity.getDataValues', () => {
         const id = 1
         const entity = new TestEntity()
         entity.nestedEntityArray = [
-            new TestNestedEntity()
+            new TestNestedEntity(),
         ]
         entity.nestedEntityArray[0].id = id
         const dataValuesResult = entity.getDataValues()

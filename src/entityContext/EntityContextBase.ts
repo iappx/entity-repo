@@ -1,33 +1,22 @@
 import { EntitySetInfo } from './types'
 import { RepoEntityBase, RepoEntityStatic } from '../entity'
-import { DefaultEntitySet } from '../entitySet'
-import { IRepository, IRepositoryBuilder } from '../repositories'
+import { ITransport } from '../transport'
+import { EntityQuery } from '../entitySet'
 
-export abstract class EntityContextBase<TEntitySet extends DefaultEntitySet<any> = DefaultEntitySet<any>> {
-    _entitySetInfo: EntitySetInfo[]
+export abstract class EntityContextBase<TTransport extends ITransport<any>> {
+    _entitySetInfo: Record<string, EntitySetInfo>
 
     constructor(
-        protected readonly repositoryBuilder: IRepositoryBuilder<any>,
+        protected readonly transport: TTransport,
     ) {
     }
 
-    getEntitySet<T extends RepoEntityBase>(key: string, entity: RepoEntityStatic<T>): TEntitySet {
-        const entitySetInfo = this._entitySetInfo.filter(p => p.entityConstructor == entity && p.key == key)
+    getEntitySet<T extends RepoEntityBase>(key: string, entity: RepoEntityStatic<T>): EntityQuery<T, TTransport, any> {
+        const entitySetInfo = this._entitySetInfo[key]
         if (!entitySetInfo) {
             throw new Error('Entity set is not defined')
         }
-        const info = entitySetInfo[0]
-        const { repositoryParams, entitySetInstance } = info
-        if (entitySetInstance) {
-            return entitySetInstance as TEntitySet
-        }
-        const repository = this.repositoryBuilder.build(entity, repositoryParams)
-        const entitySet = this.buildEntitySet(entity, repository)
-        info.entitySetInstance = entitySet
-        return entitySet
-    }
-
-    protected buildEntitySet<T extends RepoEntityBase>(entity: RepoEntityStatic<T>, repository: IRepository<T>): TEntitySet {
-        return new DefaultEntitySet<T, never>(entity, repository) as TEntitySet
+        const { entityQueryCtor, entityConstructor, queryOptions } = entitySetInfo
+        return new entityQueryCtor(entityConstructor, this.transport, queryOptions)
     }
 }

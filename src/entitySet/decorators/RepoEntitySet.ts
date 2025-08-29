@@ -1,22 +1,35 @@
 import { EntityContextBase } from '../../entityContext'
 import { RepoEntityBase, RepoEntityStatic } from '../../entity'
+import { Constructor } from '../../types/Constructor'
+import { ITransport } from '../../transport'
+import { EntityQuery } from '../EntityQuery'
 
-export const RepoEntitySet = <TRepoParams extends {} = never>(entity: () => RepoEntityStatic<RepoEntityBase>, repositoryParams?: TRepoParams) =>
-    <T extends EntityContextBase>(target: T, propertyKey: string) => {
-        if (!target._entitySetInfo) {
-            target._entitySetInfo = []
-        }
+export const RepoEntitySet = <
+    TEntity extends RepoEntityBase,
+    TTransport extends ITransport<any>,
+    TQueryOptions extends {} = never
+>(
+    entity: () => RepoEntityStatic<TEntity>,
+    entityQuery: () => Constructor<EntityQuery<TEntity, TTransport, TQueryOptions>>,
+    queryOptions?: TQueryOptions,
+) =>
+    <T extends EntityContextBase<TTransport>>(target: T, propertyKey: keyof T & string) => {
         const entityConstructor = entity()
-        target._entitySetInfo.push({
+        if (!target._entitySetInfo) {
+            target._entitySetInfo = {}
+        }
+        target._entitySetInfo[propertyKey] = {
             entityConstructor,
-            repositoryParams,
             key: propertyKey,
-        })
+            entityQueryCtor: entityQuery(),
+            queryOptions,
+        }
+        delete target[propertyKey]
         Object.defineProperty(target, propertyKey, {
-            get: function(this: EntityContextBase) {
+            get: function (this: EntityContextBase<TTransport>) {
                 return this.getEntitySet(propertyKey, entityConstructor)
             },
-            set: function(this: EntityContextBase, value: any) {
+            set: function (this: EntityContextBase<TTransport>, value: any) {
 
             },
             enumerable: true,

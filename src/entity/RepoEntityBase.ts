@@ -2,12 +2,17 @@ import { EntityAttribute } from './types'
 import { Identifier } from '../types'
 
 export abstract class RepoEntityBase<TModelAttributes extends {} = any> {
-
-    protected dataValues: TModelAttributes
-
     _attributes: TModelAttributes
 
     _attributeInfo: Record<keyof TModelAttributes, EntityAttribute>
+
+    protected dataValues: TModelAttributes
+
+    public static build<T extends RepoEntityBase>(this: new () => T, data: Record<string, any>): T {
+        const instance = new this()
+        instance.setDataValues(data)
+        return instance
+    }
 
     public getPkValue(): Identifier {
         const attributeKeys = Object.keys(this._attributeInfo)

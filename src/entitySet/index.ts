@@ -1,2 +1,2 @@
-export * from './DefaultEntitySet'
 export * from './decorators'
+export * from './EntityQuery'
