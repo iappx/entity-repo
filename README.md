@@ -233,7 +233,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [npm-shield]: https://img.shields.io/npm/v/entity-repo.svg
-[npm-url]: https://www.npmjs.com/iappx/entity-repo
+[npm-url]: https://www.npmjs.com/@iappx/entity-repo
 [issues-shield]: https://img.shields.io/github/issues/iappx/entity-repo.svg
 [issues-url]: https://github.com/iappx/entity-repo/issues
 [license-shield]: https://img.shields.io/github/license/iappx/entity-repo.svg
